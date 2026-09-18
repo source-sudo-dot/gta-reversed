@@ -39,6 +39,13 @@ struct EntityRef {
         return *this;
     }
 
+    // The implicit copy assignment would copy the raw pointer without registering it, so the
+    // copy dangles once the entity is deleted (e.g. `CAESound` copied into the sound manager's
+    // list, crash in `CAESound::UpdateParameters` after a car explodes, upstream issue #1181).
+    EntityRef<T>& operator=(const EntityRef<T>& o) noexcept {
+        return *this = o.m_Ptr;
+    }
+
     decltype(auto) Get(this auto&& self) noexcept { return self.m_Ptr; }
 
     operator T*()   const noexcept { return m_Ptr;  }
