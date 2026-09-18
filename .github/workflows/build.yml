@@ -23,7 +23,7 @@ jobs:
         os: [windows-2025-vs2026]
         arch: [x86]
         conf: [Debug, Release]
-        unity: [Unity, NoUnity]
+        unity: [Unity]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout

@@ -33,6 +33,10 @@ if (MSVC)
         add_compile_options(/ZI)
         add_link_options(/SAFESEH:NO)
     endif()
+
+    # Release pdb, so crash addresses from the event log can be symbolized.
+    # /DEBUG would turn off /OPT:REF and /OPT:ICF, so keep them explicitly.
+    add_link_options($<$<CONFIG:Release>:/DEBUG> $<$<CONFIG:Release>:/OPT:REF> $<$<CONFIG:Release>:/OPT:ICF>)
 endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
