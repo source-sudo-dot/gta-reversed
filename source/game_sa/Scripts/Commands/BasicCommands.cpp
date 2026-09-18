@@ -220,9 +220,12 @@ template<size_t MaxNumToCopy>
 void SetTextLabel(scm::StringRef dst, scm::StringRef src) {
     assert(dst.Cap >= src.Cap);
     assert(dst.Cap >= MaxNumToCopy);
-    assert(src.IsNullTerminated());
 
-    strncpy(dst.Data, src.Data, MaxNumToCopy);
+    // Pascal strings (e.g. `06D1: s$ = "NIL"` in the vanilla main.scm) are not null terminated,
+    // so copy at most `Length` chars and zero the rest, like `ReadTextLabelFromScript` does.
+    const auto numToCopy = std::min<size_t>(src.Length, MaxNumToCopy);
+    std::memcpy(dst.Data, src.Data, numToCopy);
+    std::memset(dst.Data + numToCopy, 0, MaxNumToCopy - numToCopy);
 }
 };
 
